@@ -1,29 +1,28 @@
 from PIL import Image
 import numpy as np
-
-
-def brightness_gray(arr, i, j, width_pixels):
-    color = np.sum(arr[i: i + width_pixels, j: j + width_pixels]) // 3
-    return int(color // width_pixels ** 2)
-
-
-def transform_to_mosaic(arr, step, width_pixels):
-    for i in range(0, len(arr), width_pixels):
-        for j in range(0, len(arr[1]), width_pixels):
-            avg_brightness = brightness_gray(arr, i, j, width_pixels)
-            arr[i: i + width_pixels, j: j + width_pixels] = np.full(3, int(avg_brightness // step) * step)
-    return arr
-
-
-file_name = input("Введите имя файла, который надо преобразовать ")
-res_name = input("Введите имя файла, куда надо сохранить измененную картинку ")
-width_pixels = int(input("Введите размер мозаики "))
-step = int(input("Введите количество градаций "))
-
-img = Image.open(file_name)
+img = Image.open("img2.jpg")
 arr = np.array(img)
-
-arr = transform_to_mosaic(arr, step, width_pixels)
-
+a = len(arr)
+a1 = len(arr[1])
+i = 0
+while i < a :
+    j = 0
+    while j < a1 :
+        s = 0
+        for n in range(i, i + 10):
+            for n1 in range(j, j + 10):
+                r = arr[n][n1][0]
+                g = arr[n][n1][1]
+                b = arr[n][n1][2]
+                M = (int(r) + int(g) + int(b)) // 3
+                s += M
+        s = int(s // 100)
+        for n in range(i, i + 10):
+            for n1 in range(j, j + 10):
+                arr[n][n1][0] = int(s // 50) * 50
+                arr[n][n1][1] = int(s // 50) * 50
+                arr[n][n1][2] = int(s // 50) * 50
+        j = j + 10
+    i = i + 10
 res = Image.fromarray(arr)
-res.save(res_name)
+res.save('res.jpg')
