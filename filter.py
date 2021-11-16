@@ -10,30 +10,15 @@ grad = 50
 
 
 def get_brightness_gray(pixels_array, i, j, width_mosaic):
-    final_brightness = 0
-    for row in range(i, i + width_mosaic):
-        for column in range(j, j + width_mosaic):
-            red = pixels_array[row][column][0]
-            green = pixels_array[row][column][1]
-            blue = pixels_array[row][column][2]
-            color = int(red) + int(green) + int(blue)
-            final_brightness += color // 3
-    return int(final_brightness // width_mosaic ** 2)
+    color = np.sum(pixels_array[i: i + width_mosaic, j: j + width_mosaic])
+    return int(color // 3 // width_mosaic ** 2)
 
 
 def get_mosaic(pixels_array, grad, width_mosaic):
-    i = 0
-    while i < width:
-        j = 0
-        while j < height:
+    for i in range(0, width - width_mosaic + 1, width_mosaic):
+        for j in range(0, height - width_mosaic + 1, width_mosaic):
             average_brightness = get_brightness_gray(pixels_array, i, j, width_mosaic)
-            for row in range(i, i + width_mosaic):
-                for column in range(j, j + width_mosaic):
-                    pixels_array[row][column][0] = int(average_brightness // grad) * grad
-                    pixels_array[row][column][1] = int(average_brightness // grad) * grad
-                    pixels_array[row][column][2] = int(average_brightness // grad) * grad
-            j = j + width_mosaic
-        i = i + width_mosaic
+            pixels_array[i: i + width_mosaic, j: j + width_mosaic] = np.full(3, int(average_brightness // grad) * grad)
     return pixels_array
 
 
