@@ -3,24 +3,11 @@ import numpy as np
 
 
 def avg_brightness(pixels, i, j, mosaic_size):
-    brightness = 0
-    for row in range(i, i + mosaic_size):
-        for column in range(j, j + mosaic_size):
-            r = pixels[row][column][0]
-            g = pixels[row][column][1]
-            b = pixels[row][column][2]
-            M = r // 3 + g // 3 + b // 3
-            brightness += M
-    return int(brightness // mosaic_size**2)
+    return np.mean(pixels[i:i + mosaic_size, j:j + mosaic_size])
 
 
 def set_grey_color(pixels, i, j, mosaic_size, brightness, graduation):
-    for row in range(i, i + mosaic_size):
-        for column in range(j, j + mosaic_size):
-            value = int(brightness // graduation)*graduation
-            pixels[row][column][0] = value
-            pixels[row][column][1] = value
-            pixels[row][column][2] = value
+    pixels[i:i + mosaic_size, j:j + mosaic_size] = int(brightness // graduation)*graduation
     return pixels
 
 
