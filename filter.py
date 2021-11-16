@@ -1,29 +1,41 @@
 from PIL import Image
 import numpy as np
 
+
+def avg_brightness(pixels, i, j, mosaic_size):
+    brightness = 0
+    for row in range(i, i + mosaic_size):
+        for column in range(j, j + mosaic_size):
+            r = pixels[row][column][0]
+            g = pixels[row][column][1]
+            b = pixels[row][column][2]
+            M = r // 3 + g // 3 + b // 3
+            brightness += M
+    return int(brightness // mosaic_size**2)
+
+
+def set_grey_color(pixels, i, j, mosaic_size, brightness, graduation):
+    for row in range(i, i + mosaic_size):
+        for column in range(j, j + mosaic_size):
+            value = int(brightness // graduation)*graduation
+            pixels[row][column][0] = value
+            pixels[row][column][1] = value
+            pixels[row][column][2] = value
+    return pixels
+
+
+def gray_filter(pixels, mosaic_size, graduation):
+    rows = len(pixels)
+    columns = len(pixels[1])
+    for i in range(0, rows - mosaic_size + 1, mosaic_size):
+        for j in range(0, columns - mosaic_size + 1, mosaic_size):
+            pixels = set_grey_color(pixels, i, j, mosaic_size, avg_brightness(
+                pixels, i, j, mosaic_size), graduation)
+    return pixels
+
+
 img = Image.open("img2.jpg")
-arr = np.array(img)
-a = len(arr)
-a1 = len(arr[1])
-i = 0
-while i < a:
-    j = 0
-    while j < a1:
-        s = 0
-        for n in range(i, i + 10):
-            for n0 in range(j, j + 10):
-                n1 = arr[n][n0][0]
-                n2 = arr[n][n0][1]
-                n3 = arr[n][n0][2]
-                M = n0 + n2 + n3
-                s += M / 3
-        s = int(s // 100)
-        for n in range(i, i + 10):
-            for n1 in range(j, j + 10):
-                arr[n][n1][0] = int(s // 50) * 50
-                arr[n][n1][1] = int(s // 50) * 50
-                arr[n][n1][2] = int(s // 50) * 50
-        j = j + 10
-    i = i + 10
-res = Image.fromarray(arr)
+mosaic_size = 10
+graduation = 50
+res = Image.fromarray(gray_filter(np.array(img), mosaic_size, graduation))
 res.save('res.jpg')
