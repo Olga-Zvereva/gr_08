@@ -1,34 +1,35 @@
 import numpy as np
 from PIL import Image
 import warnings
+
 warnings.filterwarnings("error")
 
 img = Image.open("img2.jpg")
-arr = np.array(img)
-a = len(arr)
-a1 = len(arr[1])
-i = 0
-while i < a - 1:
-    j = 0
-    while j < a1 - 1:
-        s = 0
-        for n in range(i, i + 10):
-            for n1 in range(j, j + 10):
-                nn1 = arr[n][n1][0]
-                nn2 = arr[n][n1][1]
-                nn3 = arr[n][n1][2]
+img_pixels = np.array(img)
+width = len(img_pixels)
+height = len(img_pixels[1])
+x = 0
+while x < width - 1:
+    y = 0
+    while y < height - 1:
+        sum_of_10_pixels = 0
+        for cur_x in range(x, x + 10):
+            for cur_y in range(y, y + 10):
+                red = img_pixels[cur_x][cur_y][0]
+                greed = img_pixels[cur_x][cur_y][1]
+                blue = img_pixels[cur_x][cur_y][2]
                 try:
-                    M = (nn1 + nn2 + nn3)/3
+                    average_pixels_value = (red + greed + blue) / 3
                 except RuntimeWarning:
-                    M = (int(nn1) + int(nn2) + int(nn3)) / 3
-                s += M
-        s = int(s // 100)
-        for n in range(i, i + 10):
-            for n1 in range(j, j + 10):
-                arr[n][n1][0] = int(s // 50) * 50
-                arr[n][n1][1] = int(s // 50) * 50
-                arr[n][n1][2] = int(s // 50) * 50
-        j = j + 10
-    i = i + 10
-res = Image.fromarray(arr)
-res.save('res.jpg')
+                    average_pixels_value = (int(red) + int(greed) + int(blue)) / 3
+                sum_of_10_pixels += average_pixels_value
+        sum_of_10_pixels = int(sum_of_10_pixels // 100)
+        for cur_x in range(x, x + 10):
+            for cur_y in range(y, y + 10):
+                img_pixels[cur_x][cur_y][0] = int(sum_of_10_pixels // 50) * 50
+                img_pixels[cur_x][cur_y][1] = int(sum_of_10_pixels // 50) * 50
+                img_pixels[cur_x][cur_y][2] = int(sum_of_10_pixels // 50) * 50
+        y = y + 10
+    x = x + 10
+res_image = Image.fromarray(img_pixels)
+res_image.save('res.jpg')
