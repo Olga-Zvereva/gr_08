@@ -1,13 +1,6 @@
 from PIL import Image
 import numpy as np
 
-img = Image.open("img2.jpg")
-pixels_array = np.array(img)
-width = len(pixels_array)
-height = len(pixels_array[1])
-width_mosaic = 10
-grad = 50
-
 
 def get_brightness_gray(pixels_array, i, j, width_mosaic):
     color = np.sum(pixels_array[i: i + width_mosaic, j: j + width_mosaic])
@@ -22,6 +15,16 @@ def get_mosaic(pixels_array, grad, width_mosaic):
     return pixels_array
 
 
+name_input_image = input('Введите имя входного изображения ')
+name_output_image = input('Введите имя выходного изображения ')
+width_mosaic = int(input('Введите размер мозаики '))
+grad = int(input('Введите величину градации серого '))
+
+img = Image.open(name_input_image)
+pixels_array = np.array(img)
+width = len(pixels_array)
+height = len(pixels_array[1])
+
 pixels_array = get_mosaic(pixels_array, grad, width_mosaic)
 result_image = Image.fromarray(pixels_array)
-result_image.save('res.jpg')
+result_image.save(name_output_image)
