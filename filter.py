@@ -28,3 +28,4 @@ array = np.array(img)
 array = filter(array, cell_size_data, graduation_data)
 res = Image.fromarray(array)
 res.save(output)
+11111
