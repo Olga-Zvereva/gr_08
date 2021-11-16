@@ -1,28 +1,29 @@
 from PIL import Image
 import numpy as np
-img = Image.open("img2.jpg")
-arr = np.array(img)
-a = len(arr)
-a1 = len(arr[1])
-i = 0
-while i < a - 11:
-    j = 0
-    while j < a1 - 11:
-        s = 0
-        for n in range(i, i + 10):
-            for n1 in range(j, j + 10):
-                n1 = arr[n][n1][0]
-                n2 = arr[n][n1][1]
-                n3 = arr[n][n1][2]
-                M = n1 + n2 + n3
-                s += M
-        s = int(s // 100)
-        for n in range(i, i + 10):
-            for n1 in range(j, j + 10):
-                arr[n][n1][0] = int(s // 50) * 50
-                arr[n][n1][1] = int(s // 50) * 50
-                arr[n][n1][2] = int(s // 50) * 50
-        j = j + 10
-    i = i + 10
-res = Image.fromarray(arr)
-res.save('res.jpg')
+
+
+def avg_brightness(pixels, i, j, mosaic_size):
+    return np.mean(pixels[i:i + mosaic_size, j:j + mosaic_size])
+
+
+def set_grey_color(pixels, i, j, mosaic_size, brightness, graduation):
+    pixels[i:i + mosaic_size, j:j + mosaic_size] = int(brightness // graduation)*graduation
+    return pixels
+
+
+def gray_filter(pixels, mosaic_size, graduation):
+    rows = len(pixels)
+    columns = len(pixels[1])
+    for i in range(0, rows - mosaic_size + 1, mosaic_size):
+        for j in range(0, columns - mosaic_size + 1, mosaic_size):
+            pixels = set_grey_color(pixels, i, j, mosaic_size, avg_brightness(
+                pixels, i, j, mosaic_size), graduation)
+    return pixels
+
+
+img = Image.open(input("Название изображения с расширением файла: "))
+mosaic_size = int(input("Размер мозайки: "))
+graduation = int(input("Градация: "))
+res_name = input("Название получившейся картинки: ")
+res = Image.fromarray(gray_filter(np.array(img), mosaic_size, graduation))
+res.save(res_name)
