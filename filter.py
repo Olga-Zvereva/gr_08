@@ -2,27 +2,41 @@ from PIL import Image
 import numpy as np
 img = Image.open("img2.jpg")
 arr = np.array(img)
-a = len(arr)
-a1 = len(arr[1])
-i = 0
-while i < a - 11:
-    j = 0
-    while j < a1 - 11:
-        s = 0
-        for n in range(i, i + 10):
-            for n1 in range(j, j + 10):
-                r = arr[n][n1][0]
-                g = arr[n][n1][1]
-                b = arr[n][n1][2]
-                M = (int(r) + int(g) + int(b)) // 3
-                s += M
-        s = int(s // 100)
-        for n in range(i, i + 10):
-            for n1 in range(j, j + 10):
-                arr[n][n1][0] = int(s // 50) * 50
-                arr[n][n1][1] = int(s // 50) * 50
-                arr[n][n1][2] = int(s // 50) * 50
-        j = j + 10
-    i = i + 10
+width = len(arr)
+height = len(arr[1])
+width_pixels = 10
+step = 50
+
+
+def brightness_gray(arr, i, j, width_pixels):
+    s = 0
+    for x in range(i, i + width_pixels):
+        for y in range(j, j + width_pixels):
+            r = arr[x][y][0]
+            g = arr[x][y][1]
+            b = arr[x][y][2]
+            color = (int(r) + int(g) + int(b)) // 3
+            s += color
+    s = int(s // width_pixels ** 2)
+    return s
+
+
+def transform_to_mosaic(arr, step, width_pixels):
+    i = 0
+    while i < width:
+        j = 0
+        while j < height:
+            avg_brightness = brightness_gray(arr, i, j, width_pixels)
+            for x in range(i, i + width_pixels):
+                for y in range(j, j + width_pixels):
+                    arr[x][y][0] = int(avg_brightness // step) * step
+                    arr[x][y][1] = int(avg_brightness // step) * step
+                    arr[x][y][2] = int(avg_brightness // step) * step
+            j = j + width_pixels
+        i = i + width_pixels
+    return arr
+
+
+arr = transform_to_mosaic(arr, step, width_pixels)
 res = Image.fromarray(arr)
 res.save('res.jpg')
