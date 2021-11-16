@@ -42,4 +42,4 @@ arr = transform_to_mosaic(arr, step, width_pixels)
 
 res = Image.fromarray(arr)
 res.save('res.jpg')
-1
+
