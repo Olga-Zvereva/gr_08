@@ -23,6 +23,11 @@ def grey_filter(image, mosaic_size, grayscale):
     return array_of_pixels
 
 
-input_image = Image.open("img2.jpg")
-image_in_gray_tones = Image.fromarray(grey_filter(input_image, 10, 50))
-image_in_gray_tones.save('res.jpg') 
+def main():
+    name_of_input_image = '{}.{}'.format(input('Имя входного изображения - '), input('Формат входного изображения - '))
+    mosaic_size = int(input('Размер мозаики - '))
+    grayscale = int(input('Величина градации серого - '))
+    name_of_output_image = '{}.{}'.format(input('Имя выходного изображения - '), input('Формат выходного изображения - '))
+    input_image = Image.open(name_of_input_image)
+    image_in_gray_tones = Image.fromarray(grey_filter(input_image, mosaic_size, grayscale))
+    image_in_gray_tones.save(name_of_output_image) 
