@@ -4,14 +4,17 @@ import warnings
 
 warnings.filterwarnings("error")
 
-img = Image.open("img2.jpg")
+input_filepath = input()
+output_filepath = input()
+
+img = Image.open(input_filepath)
 img_pixels = np.array(img)
 width = len(img_pixels)
 height = len(img_pixels[1])
 x = 0
-while x < width - 1:
+while x < width - (width % 10):
     y = 0
-    while y < height - 1:
+    while y < height - (height % 10):
         sum_of_10_pixels = 0
         for cur_x in range(x, x + 10):
             for cur_y in range(y, y + 10):
@@ -32,4 +35,4 @@ while x < width - 1:
         y = y + 10
     x = x + 10
 res_image = Image.fromarray(img_pixels)
-res_image.save('res.jpg')
+res_image.save(output_filepath)
