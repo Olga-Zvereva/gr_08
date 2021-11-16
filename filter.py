@@ -21,8 +21,9 @@ def gray_filter(pixels, mosaic_size, graduation):
     return pixels
 
 
-img = Image.open("img2.jpg")
-mosaic_size = 10
-graduation = 50
+img = Image.open(input("Название изображения с расширением файла: "))
+mosaic_size = int(input("Размер мозайки: "))
+graduation = int(input("Градация: "))
+res_name = input("Название получившейся картинки: ")
 res = Image.fromarray(gray_filter(np.array(img), mosaic_size, graduation))
-res.save('res.jpg')
+res.save(res_name)
