@@ -1,20 +1,26 @@
-from PIL import Image
 import numpy as np
+from PIL import Image
+import warnings
+warnings.filterwarnings("error")
+
 img = Image.open("img2.jpg")
 arr = np.array(img)
 a = len(arr)
 a1 = len(arr[1])
 i = 0
-while i < a - 11:
+while i < a - 1:
     j = 0
-    while j < a1 - 11:
+    while j < a1 - 1:
         s = 0
         for n in range(i, i + 10):
             for n1 in range(j, j + 10):
-                n1 = arr[n][n1][0]
-                n2 = arr[n][n1][1]
-                n3 = arr[n][n1][2]
-                M = n1 + n2 + n3
+                nn1 = arr[n][n1][0]
+                nn2 = arr[n][n1][1]
+                nn3 = arr[n][n1][2]
+                try:
+                    M = (nn1 + nn2 + nn3)/3
+                except RuntimeWarning:
+                    M = (int(nn1) + int(nn2) + int(nn3)) / 3
                 s += M
         s = int(s // 100)
         for n in range(i, i + 10):
