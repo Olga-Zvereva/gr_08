@@ -1,28 +1,40 @@
-from PIL import Image
+import argparse
 import numpy as np
-img = Image.open("img2.jpg")
-arr = np.array(img)
-a = len(arr)
-a1 = len(arr[1])
-i = 0
-while i < a - 11:
-    j = 0
-    while j < a1 - 11:
-        s = 0
-        for n in range(i, i + 10):
-            for n1 in range(j, j + 10):
-                n1 = arr[n][n1][0]
-                n2 = arr[n][n1][1]
-                n3 = arr[n][n1][2]
-                M = n1 + n2 + n3
-                s += M
-        s = int(s // 100)
-        for n in range(i, i + 10):
-            for n1 in range(j, j + 10):
-                arr[n][n1][0] = int(s // 50) * 50
-                arr[n][n1][1] = int(s // 50) * 50
-                arr[n][n1][2] = int(s // 50) * 50
-        j = j + 10
-    i = i + 10
-res = Image.fromarray(arr)
-res.save('res.jpg')
+from PIL import Image
+
+
+def crop_img(pixels, distance):
+    height_overflow = len(pixels) % distance
+    width_overflow = len(pixels[1]) % distance
+    return pixels[:len(pixels) - height_overflow,
+                  :len(pixels[0]) - width_overflow]
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("input", type=str, help="path to image")
+parser.add_argument("--output", dest="output", type=str, help="path to result image", default="res.jpg")
+parser.add_argument("--size", dest="size", type=int, help="mozaik size", default=10)
+parser.add_argument("--gradations", dest="gradation_count", type=int, help="How many gray gradations will be in result image", default=4)
+args = parser.parse_args()
+
+img = Image.open(args.input)
+mozaik_size = args.size
+gradation = args.gradation_count
+res_file = args.output
+
+pixels = np.array(img)
+gradation_step = 256 / gradation
+
+pixels = crop_img(pixels, mozaik_size)
+height = len(pixels)
+width = len(pixels[1])
+
+for x in range(0, width - mozaik_size+1, mozaik_size):
+    for y in range(0, height - mozaik_size+1, mozaik_size):
+        mozaik = pixels[y:y + mozaik_size, x:x + mozaik_size]
+        average = np.average(mozaik)
+        average = int(average//gradation_step) * gradation_step
+        mozaik.fill(average)
+
+res = Image.fromarray(pixels)
+res.save(res_file)
